@@ -11,15 +11,14 @@ public class MainDesktopPane extends JDesktopPane {
   public MainDesktopPane() {
     super();
 
-    addWindow(getLogWindow());
-    addWindow(getGameWindow());
+    addWindow(createLogWindow(), 300, 800);
+    addWindow(new GameWindow(), 400, 400);
   }
 
-  private LogWindow getLogWindow() {
+  private LogWindow createLogWindow() {
     LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
 
     logWindow.setLocation(10, 10);
-    logWindow.setSize(300, 800);
 
     setMinimumSize(logWindow.getSize());
     logWindow.pack();
@@ -29,15 +28,8 @@ public class MainDesktopPane extends JDesktopPane {
     return logWindow;
   }
 
-  private GameWindow getGameWindow() {
-    GameWindow gameWindow = new GameWindow();
-
-    gameWindow.setSize(400, 400);
-
-    return gameWindow;
-  }
-
-  private void addWindow(JInternalFrame frame) {
+  private void addWindow(JInternalFrame frame, int width, int height) {
+    frame.setSize(width, height);
     add(frame);
     frame.setVisible(true);
   }
