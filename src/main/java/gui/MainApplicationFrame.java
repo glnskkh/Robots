@@ -56,7 +56,7 @@ public class MainApplicationFrame extends JFrame {
   }
 
   private void setUpClosingLogic() {
-    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent e) {
