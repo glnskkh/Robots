@@ -6,6 +6,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -20,6 +22,7 @@ import log.Logger;
 
 public class MainApplicationFrame extends JFrame {
 
+  private static ResourceBundle rb;
   private JMenuBar mainMenuBar;
   private JDesktopPane mainDesktopPane;
 
@@ -31,6 +34,16 @@ public class MainApplicationFrame extends JFrame {
     setJMenuBar(mainMenuBar);
 
     setUpClosingLogic();
+  }
+
+  public static String getLocaleString(String key) {
+    return rb.getString(key);
+  }
+
+  @Override
+  public void setLocale(Locale l) {
+    super.setLocale(l);
+    rb = ResourceBundle.getBundle("MainApplicationFrameLocale", this.getLocale());
   }
 
   private void createDesktopPane() {
@@ -62,16 +75,14 @@ public class MainApplicationFrame extends JFrame {
   }
 
   void callCloseDialog() {
-    int confirm = JOptionPane.showConfirmDialog(this, "Закрыть приложение?", "Закрыть",
-        JOptionPane.YES_NO_OPTION);
+    int confirm = JOptionPane.showConfirmDialog(this, getLocaleString("closeDialog.message"),
+        getLocaleString("closeDialog.title"), JOptionPane.YES_NO_OPTION);
 
     if (confirm == JOptionPane.YES_OPTION) {
       setVisible(false);
 
-      for (var frame : mainDesktopPane.getAllFrames()) {
-        System.out.println(frame.getX());
+      for (var frame : mainDesktopPane.getAllFrames())
         frame.dispose();
-      }
 
       dispose();
     }
@@ -93,7 +104,7 @@ public class MainApplicationFrame extends JFrame {
     mainMenuBar.add(createLookAndFeelMenu());
     mainMenuBar.add(createTestMenu());
 
-    mainMenuBar.add(createMenuItem("Закрыть", KeyEvent.VK_C, (event) -> {
+    mainMenuBar.add(createMenuItem(getLocaleString("closeDialog.title"), KeyEvent.VK_C, (event) -> {
       callCloseDialog();
     }));
 
@@ -109,18 +120,18 @@ public class MainApplicationFrame extends JFrame {
   }
 
   private JMenu createLookAndFeelMenu() {
-    JMenu lookAndFeelMenu = new JMenu("Режим отображения");
+    JMenu lookAndFeelMenu = new JMenu(getLocaleString("lookAndFeelMenu.text"));
 
     lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
     lookAndFeelMenu.getAccessibleContext()
-        .setAccessibleDescription("Управление режимом отображения приложения");
+        .setAccessibleDescription(getLocaleString("lookAndFeelMenu.accessible"));
 
-    lookAndFeelMenu.add(createMenuItem("Системная схема", KeyEvent.VK_S, (event) -> {
+    lookAndFeelMenu.add(createMenuItem(getLocaleString("systemLookAndFeel.text"), KeyEvent.VK_S, (event) -> {
       setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
       invalidate();
     }));
 
-    lookAndFeelMenu.add(createMenuItem("Универсальная схема", KeyEvent.VK_S, (event) -> {
+    lookAndFeelMenu.add(createMenuItem(getLocaleString("crossplatformLookAndFeel.text"), KeyEvent.VK_S, (event) -> {
       setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
       invalidate();
     }));
@@ -129,12 +140,12 @@ public class MainApplicationFrame extends JFrame {
   }
 
   private JMenu createTestMenu() {
-    JMenu testMenu = new JMenu("Тесты");
+    JMenu testMenu = new JMenu(getLocaleString("testMenu.text"));
     testMenu.setMnemonic(KeyEvent.VK_T);
-    testMenu.getAccessibleContext().setAccessibleDescription("Тестовые команды");
+    testMenu.getAccessibleContext().setAccessibleDescription(getLocaleString("testMenu.accessible"));
 
-    testMenu.add(createMenuItem("Сообщение в лог", KeyEvent.VK_S, (event) -> {
-      Logger.debug("Новая строка");
+    testMenu.add(createMenuItem(getLocaleString("addLogMessageItem.text"), KeyEvent.VK_S, (event) -> {
+      Logger.debug(getLocaleString("Logger.message001"));
     }));
 
     return testMenu;
@@ -158,7 +169,7 @@ public class MainApplicationFrame extends JFrame {
     setMinimumSize(logWindow.getSize());
     logWindow.pack();
 
-    Logger.debug("Протокол работает");
+    Logger.debug(getLocaleString("Logger.message002"));
 
     return logWindow;
   }
