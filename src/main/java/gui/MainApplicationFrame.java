@@ -108,6 +108,8 @@ public class MainApplicationFrame extends JFrame {
       callCloseDialog();
     }));
 
+    mainMenuBar.add(createLocaleMenu());
+
     setJMenuBar(mainMenuBar);
   }
 
@@ -117,6 +119,24 @@ public class MainApplicationFrame extends JFrame {
     menuItem.addActionListener(action);
 
     return menuItem;
+  }
+
+  private JMenu createLocaleMenu() {
+    JMenu localeMenu = new JMenu(getLocaleString("localeMenu.text"));
+
+    localeMenu.setMnemonic(KeyEvent.VK_L);
+    localeMenu.getAccessibleContext()
+        .setAccessibleDescription(getLocaleString("localeMenu.accessible"));
+
+    localeMenu.add(createMenuItem(getLocaleString("locale_ru_RU.text"), KeyEvent.VK_R, (event) -> {
+      setLocale(new Locale("ru", "RU"));
+    }));
+
+    localeMenu.add(createMenuItem(getLocaleString("locale_en_US.text"), KeyEvent.VK_R, (event) -> {
+      setLocale(new Locale("en", "US"));
+    }));
+
+    return localeMenu;
   }
 
   private JMenu createLookAndFeelMenu() {
