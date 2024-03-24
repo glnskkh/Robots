@@ -52,6 +52,10 @@ public class MainApplicationFrame extends JFrame {
     addWindow(createLogWindow(), 300, 800);
     addWindow(new GameWindow(), 400, 400);
 
+    for (var frame : mainDesktopPane.getAllFrames()) {
+      PreferenceHandler.restoreWindow(frame);
+    }
+
     setContentPane(mainDesktopPane);
   }
 
@@ -81,8 +85,10 @@ public class MainApplicationFrame extends JFrame {
     if (confirm == JOptionPane.YES_OPTION) {
       setVisible(false);
 
-      for (var frame : mainDesktopPane.getAllFrames())
+      for (var frame : mainDesktopPane.getAllFrames()) {
+        PreferenceHandler.saveWindow(frame);
         frame.dispose();
+      }
 
       dispose();
     }
@@ -146,15 +152,17 @@ public class MainApplicationFrame extends JFrame {
     lookAndFeelMenu.getAccessibleContext()
         .setAccessibleDescription(getLocaleString("lookAndFeelMenu.accessible"));
 
-    lookAndFeelMenu.add(createMenuItem(getLocaleString("systemLookAndFeel.text"), KeyEvent.VK_S, (event) -> {
-      setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-      invalidate();
-    }));
+    lookAndFeelMenu.add(
+        createMenuItem(getLocaleString("systemLookAndFeel.text"), KeyEvent.VK_S, (event) -> {
+          setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+          invalidate();
+        }));
 
-    lookAndFeelMenu.add(createMenuItem(getLocaleString("crossplatformLookAndFeel.text"), KeyEvent.VK_S, (event) -> {
-      setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-      invalidate();
-    }));
+    lookAndFeelMenu.add(
+        createMenuItem(getLocaleString("crossplatformLookAndFeel.text"), KeyEvent.VK_S, (event) -> {
+          setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+          invalidate();
+        }));
 
     return lookAndFeelMenu;
   }
@@ -162,11 +170,13 @@ public class MainApplicationFrame extends JFrame {
   private JMenu createTestMenu() {
     JMenu testMenu = new JMenu(getLocaleString("testMenu.text"));
     testMenu.setMnemonic(KeyEvent.VK_T);
-    testMenu.getAccessibleContext().setAccessibleDescription(getLocaleString("testMenu.accessible"));
+    testMenu.getAccessibleContext()
+        .setAccessibleDescription(getLocaleString("testMenu.accessible"));
 
-    testMenu.add(createMenuItem(getLocaleString("addLogMessageItem.text"), KeyEvent.VK_S, (event) -> {
-      Logger.debug(getLocaleString("Logger.message001"));
-    }));
+    testMenu.add(
+        createMenuItem(getLocaleString("addLogMessageItem.text"), KeyEvent.VK_S, (event) -> {
+          Logger.debug(getLocaleString("Logger.message001"));
+        }));
 
     return testMenu;
   }
