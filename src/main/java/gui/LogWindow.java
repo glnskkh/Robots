@@ -7,9 +7,9 @@ import javax.swing.JPanel;
 import log.LogChangeListener;
 import log.LogEntry;
 import log.LogWindowSource;
-import serialization.PreferenceStorable;
+import serialization.PreferenceStorableInternalFrame;
 
-public class LogWindow extends PreferenceStorable implements LogChangeListener {
+public class LogWindow extends PreferenceStorableInternalFrame implements LogChangeListener {
 
   private final LogWindowSource m_logSource;
   private final TextArea m_logContent;

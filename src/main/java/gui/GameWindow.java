@@ -2,9 +2,9 @@ package gui;
 
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
-import serialization.PreferenceStorable;
+import serialization.PreferenceStorableInternalFrame;
 
-public class GameWindow extends PreferenceStorable {
+public class GameWindow extends PreferenceStorableInternalFrame {
 
   private final GameVisualizer m_visualizer;
 

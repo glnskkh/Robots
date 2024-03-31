@@ -3,7 +3,7 @@ package serialization;
 import java.util.prefs.Preferences;
 import javax.swing.JInternalFrame;
 
-public abstract class PreferenceStorable extends JInternalFrame implements IStorable {
+public abstract class PreferenceStorableInternalFrame extends JInternalFrame implements IStorable {
 
   private static final String prefixWindowPreferences;
   private static final String prefixWindowPositionX;
@@ -19,7 +19,7 @@ public abstract class PreferenceStorable extends JInternalFrame implements IStor
     prefixWindowSizeHeight = formatTitle("size height");
   }
 
-  public PreferenceStorable() {
+  public PreferenceStorableInternalFrame() {
     super();
   }
 
