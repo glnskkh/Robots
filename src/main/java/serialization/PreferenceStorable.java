@@ -1,9 +1,9 @@
-package gui;
+package serialization;
 
 import java.util.prefs.Preferences;
 import javax.swing.JInternalFrame;
 
-public class PreferenceHandler {
+public abstract class PreferenceStorable extends JInternalFrame implements IStorable {
 
   private static final String prefixWindowPreferences;
   private static final String prefixWindowPositionX;
@@ -19,6 +19,9 @@ public class PreferenceHandler {
     prefixWindowSizeHeight = formatTitle("size height");
   }
 
+  public PreferenceStorable() {
+    super();
+  }
 
   private static Preferences getPreferences() {
     return Preferences.userRoot().node(prefixWindowPreferences);
@@ -30,22 +33,24 @@ public class PreferenceHandler {
     return cased.replaceAll(" +", "_");
   }
 
-  public synchronized static void saveWindow(JInternalFrame frame) {
+  @Override
+  public void save() {
     Preferences preferences = getPreferences();
 
-    String title = formatTitle(frame.getTitle());
+    String title = formatTitle(getTitle());
 
-    preferences.putInt(prefixWindowPositionX + title, frame.getX());
-    preferences.putInt(prefixWindowPositionY + title, frame.getY());
-    preferences.putInt(prefixWindowSizeWidth + title, frame.getWidth());
-    preferences.putInt(prefixWindowSizeHeight + title, frame.getHeight());
+    preferences.putInt(prefixWindowPositionX + title, getX());
+    preferences.putInt(prefixWindowPositionY + title, getY());
+    preferences.putInt(prefixWindowSizeWidth + title, getWidth());
+    preferences.putInt(prefixWindowSizeHeight + title, getHeight());
   }
 
-  public synchronized static void restoreWindow(JInternalFrame frame) {
+  @Override
+  public void restore() {
     Preferences preferences = getPreferences();
     final int missing = -1;
 
-    String title = formatTitle(frame.getTitle());
+    String title = formatTitle(getTitle());
 
     int x = preferences.getInt(prefixWindowPositionX + title, missing);
     int y = preferences.getInt(prefixWindowPositionY + title, missing);
@@ -56,6 +61,6 @@ public class PreferenceHandler {
       return;
     }
 
-    frame.setBounds(x, y, width, height);
+    setBounds(x, y, width, height);
   }
 }

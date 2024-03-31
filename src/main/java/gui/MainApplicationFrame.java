@@ -19,6 +19,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import log.Logger;
+import serialization.PreferenceStorable;
 
 public class MainApplicationFrame extends JFrame {
 
@@ -53,7 +54,7 @@ public class MainApplicationFrame extends JFrame {
     addWindow(new GameWindow(), 400, 400);
 
     for (var frame : mainDesktopPane.getAllFrames()) {
-      PreferenceHandler.restoreWindow(frame);
+      ((PreferenceStorable) frame).restore();
     }
 
     setContentPane(mainDesktopPane);
@@ -86,7 +87,7 @@ public class MainApplicationFrame extends JFrame {
       setVisible(false);
 
       for (var frame : mainDesktopPane.getAllFrames()) {
-        PreferenceHandler.saveWindow(frame);
+        ((PreferenceStorable) frame).save();
         frame.dispose();
       }
 
