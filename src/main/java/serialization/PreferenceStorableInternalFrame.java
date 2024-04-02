@@ -21,14 +21,14 @@ public abstract class PreferenceStorableInternalFrame extends JInternalFrame imp
     prefixWindowSizeHeight = formatTitle("size height");
   }
 
-  private Preferences getPreferences() {
-    return Preferences.userRoot().node(prefixWindowPreferences);
-  }
-
   private static String formatTitle(String title) {
     String cased = title.toUpperCase();
 
     return cased.replaceAll(" +", "_");
+  }
+
+  private Preferences getPreferences() {
+    return Preferences.userRoot().node(prefixWindowPreferences);
   }
 
   @Override
