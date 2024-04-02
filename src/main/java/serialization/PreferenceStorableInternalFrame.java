@@ -5,7 +5,7 @@ import javax.swing.JInternalFrame;
 
 public abstract class PreferenceStorableInternalFrame extends JInternalFrame implements IStorable {
 
-  private static final String prefixWindowPreferences = formatTitle("window preferences");
+  private final String prefixWindowPreferences;
   private final String prefixWindowPositionX;
   private final String prefixWindowPositionY;
   private final String prefixWindowSizeWidth;
@@ -14,13 +14,14 @@ public abstract class PreferenceStorableInternalFrame extends JInternalFrame imp
   public PreferenceStorableInternalFrame() {
     super();
 
+    prefixWindowPreferences = formatTitle("window preferences");
     prefixWindowPositionX = formatTitle("position x");
     prefixWindowPositionY = formatTitle("position y");
     prefixWindowSizeWidth = formatTitle("size width");
     prefixWindowSizeHeight = formatTitle("size height");
   }
 
-  private static Preferences getPreferences() {
+  private Preferences getPreferences() {
     return Preferences.userRoot().node(prefixWindowPreferences);
   }
 
