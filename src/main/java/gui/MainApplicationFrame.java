@@ -53,11 +53,21 @@ public class MainApplicationFrame extends JFrame {
     addWindow(createLogWindow(), 300, 800);
     addWindow(new GameWindow(), 400, 400);
 
+    restoreWindows();
+
+    setContentPane(mainDesktopPane);
+  }
+
+  private void restoreWindows() {
     for (var frame : mainDesktopPane.getAllFrames()) {
       ((PreferenceStorableInternalFrame) frame).restore();
     }
+  }
 
-    setContentPane(mainDesktopPane);
+  private void saveWindows() {
+    for (var frame : mainDesktopPane.getAllFrames()) {
+      ((PreferenceStorableInternalFrame) frame).save();
+    }
   }
 
   private void setUpClosingLogic() {
@@ -80,6 +90,12 @@ public class MainApplicationFrame extends JFrame {
   }
 
   void callCloseDialog() {
+    int confirmSave = JOptionPane.showConfirmDialog(this, getLocaleString("saveDialog.message"), getLocaleString("saveDialog.title"), JOptionPane.YES_NO_OPTION);
+
+    if (confirmSave == JOptionPane.YES_OPTION) {
+      saveWindows();
+    }
+
     int confirm = JOptionPane.showConfirmDialog(this, getLocaleString("closeDialog.message"),
         getLocaleString("closeDialog.title"), JOptionPane.YES_NO_OPTION);
 
@@ -87,7 +103,6 @@ public class MainApplicationFrame extends JFrame {
       setVisible(false);
 
       for (var frame : mainDesktopPane.getAllFrames()) {
-        ((PreferenceStorableInternalFrame) frame).save();
         frame.dispose();
       }
 
@@ -116,6 +131,8 @@ public class MainApplicationFrame extends JFrame {
     }));
 
     mainMenuBar.add(createLocaleMenu());
+
+    mainMenuBar.add(createSaveMenu());
 
     setJMenuBar(mainMenuBar);
   }
@@ -180,6 +197,18 @@ public class MainApplicationFrame extends JFrame {
         }));
 
     return testMenu;
+  }
+
+  private JMenu createSaveMenu() {
+    JMenu saveMenu = new JMenu(getLocaleString("saveMenu.text"));
+    saveMenu.setMnemonic(KeyEvent.VK_S);
+    saveMenu.getAccessibleContext().setAccessibleDescription("saveMenu.accessible");
+
+    saveMenu.add(
+        createMenuItem(getLocaleString(("saveMenuItem.text")), KeyEvent.VK_S, (e) -> this.saveWindows())
+    );
+
+    return saveMenu;
   }
 
   private void addWindow(JInternalFrame frame, int width, int height) {
