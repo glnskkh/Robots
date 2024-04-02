@@ -5,22 +5,19 @@ import javax.swing.JInternalFrame;
 
 public abstract class PreferenceStorableInternalFrame extends JInternalFrame implements IStorable {
 
-  private static final String prefixWindowPreferences;
-  private static final String prefixWindowPositionX;
-  private static final String prefixWindowPositionY;
-  private static final String prefixWindowSizeWidth;
-  private static final String prefixWindowSizeHeight;
+  private static final String prefixWindowPreferences = formatTitle("window preferences");
+  private final String prefixWindowPositionX;
+  private final String prefixWindowPositionY;
+  private final String prefixWindowSizeWidth;
+  private final String prefixWindowSizeHeight;
 
-  static {
-    prefixWindowPreferences = formatTitle("window preferences");
+  public PreferenceStorableInternalFrame() {
+    super();
+
     prefixWindowPositionX = formatTitle("position x");
     prefixWindowPositionY = formatTitle("position y");
     prefixWindowSizeWidth = formatTitle("size width");
     prefixWindowSizeHeight = formatTitle("size height");
-  }
-
-  public PreferenceStorableInternalFrame() {
-    super();
   }
 
   private static Preferences getPreferences() {
