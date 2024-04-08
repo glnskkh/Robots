@@ -1,5 +1,7 @@
 package gui;
 
+import game.GameLogic;
+import game.GameWindow;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
@@ -26,6 +28,7 @@ public class MainApplicationFrame extends JFrame {
   private static ResourceBundle rb;
   private JMenuBar mainMenuBar;
   private JDesktopPane mainDesktopPane;
+  private GameLogic gameLogic;
 
   public MainApplicationFrame() {
     setInnerIndentation(50);
@@ -51,7 +54,12 @@ public class MainApplicationFrame extends JFrame {
     mainDesktopPane = new JDesktopPane();
 
     addWindow(createLogWindow(), 300, 800);
-    addWindow(new GameWindow(), 400, 400);
+
+    gameLogic = new GameLogic();
+    gameLogic.startTimer();
+
+    addWindow(new GameWindow(gameLogic), 400, 400);
+    addWindow(new GameInfoWindow(gameLogic), 300, 300);
 
     restoreWindows();
 
@@ -100,6 +108,8 @@ public class MainApplicationFrame extends JFrame {
         getLocaleString("closeDialog.title"), JOptionPane.YES_NO_OPTION);
 
     if (confirm == JOptionPane.YES_OPTION) {
+      gameLogic.stopTimer();
+
       setVisible(false);
 
       for (var frame : mainDesktopPane.getAllFrames()) {
