@@ -52,7 +52,8 @@ public class Robot extends Observable {
   }
 
   private double angleToTarget() {
-    return GameLogic.LogicMath.angleTo(getX(), getY(), target.getX(), target.getY());
+    return GameLogic.LogicMath.asNormalizedRadians(
+        GameLogic.LogicMath.angleTo(getX(), getY(), target.getX(), target.getY()));
   }
 
   public void move(double dt) {
