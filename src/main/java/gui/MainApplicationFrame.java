@@ -19,6 +19,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import log.Logger;
+import serialization.PreferenceStorableInternalFrame;
 
 public class MainApplicationFrame extends JFrame {
 
@@ -52,7 +53,21 @@ public class MainApplicationFrame extends JFrame {
     addWindow(createLogWindow(), 300, 800);
     addWindow(new GameWindow(), 400, 400);
 
+    restoreWindows();
+
     setContentPane(mainDesktopPane);
+  }
+
+  private void restoreWindows() {
+    for (var frame : mainDesktopPane.getAllFrames()) {
+      ((PreferenceStorableInternalFrame) frame).restore();
+    }
+  }
+
+  private void saveWindows() {
+    for (var frame : mainDesktopPane.getAllFrames()) {
+      ((PreferenceStorableInternalFrame) frame).save();
+    }
   }
 
   private void setUpClosingLogic() {
@@ -75,14 +90,21 @@ public class MainApplicationFrame extends JFrame {
   }
 
   void callCloseDialog() {
+    int confirmSave = JOptionPane.showConfirmDialog(this, getLocaleString("saveDialog.message"), getLocaleString("saveDialog.title"), JOptionPane.YES_NO_OPTION);
+
+    if (confirmSave == JOptionPane.YES_OPTION) {
+      saveWindows();
+    }
+
     int confirm = JOptionPane.showConfirmDialog(this, getLocaleString("closeDialog.message"),
         getLocaleString("closeDialog.title"), JOptionPane.YES_NO_OPTION);
 
     if (confirm == JOptionPane.YES_OPTION) {
       setVisible(false);
 
-      for (var frame : mainDesktopPane.getAllFrames())
+      for (var frame : mainDesktopPane.getAllFrames()) {
         frame.dispose();
+      }
 
       dispose();
     }
@@ -109,6 +131,8 @@ public class MainApplicationFrame extends JFrame {
     }));
 
     mainMenuBar.add(createLocaleMenu());
+
+    mainMenuBar.add(createSaveMenu());
 
     setJMenuBar(mainMenuBar);
   }
@@ -146,15 +170,17 @@ public class MainApplicationFrame extends JFrame {
     lookAndFeelMenu.getAccessibleContext()
         .setAccessibleDescription(getLocaleString("lookAndFeelMenu.accessible"));
 
-    lookAndFeelMenu.add(createMenuItem(getLocaleString("systemLookAndFeel.text"), KeyEvent.VK_S, (event) -> {
-      setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-      invalidate();
-    }));
+    lookAndFeelMenu.add(
+        createMenuItem(getLocaleString("systemLookAndFeel.text"), KeyEvent.VK_S, (event) -> {
+          setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+          invalidate();
+        }));
 
-    lookAndFeelMenu.add(createMenuItem(getLocaleString("crossplatformLookAndFeel.text"), KeyEvent.VK_S, (event) -> {
-      setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-      invalidate();
-    }));
+    lookAndFeelMenu.add(
+        createMenuItem(getLocaleString("crossplatformLookAndFeel.text"), KeyEvent.VK_S, (event) -> {
+          setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+          invalidate();
+        }));
 
     return lookAndFeelMenu;
   }
@@ -162,13 +188,27 @@ public class MainApplicationFrame extends JFrame {
   private JMenu createTestMenu() {
     JMenu testMenu = new JMenu(getLocaleString("testMenu.text"));
     testMenu.setMnemonic(KeyEvent.VK_T);
-    testMenu.getAccessibleContext().setAccessibleDescription(getLocaleString("testMenu.accessible"));
+    testMenu.getAccessibleContext()
+        .setAccessibleDescription(getLocaleString("testMenu.accessible"));
 
-    testMenu.add(createMenuItem(getLocaleString("addLogMessageItem.text"), KeyEvent.VK_S, (event) -> {
-      Logger.debug(getLocaleString("Logger.message001"));
-    }));
+    testMenu.add(
+        createMenuItem(getLocaleString("addLogMessageItem.text"), KeyEvent.VK_S, (event) -> {
+          Logger.debug(getLocaleString("Logger.message001"));
+        }));
 
     return testMenu;
+  }
+
+  private JMenu createSaveMenu() {
+    JMenu saveMenu = new JMenu(getLocaleString("saveMenu.text"));
+    saveMenu.setMnemonic(KeyEvent.VK_S);
+    saveMenu.getAccessibleContext().setAccessibleDescription("saveMenu.accessible");
+
+    saveMenu.add(
+        createMenuItem(getLocaleString(("saveMenuItem.text")), KeyEvent.VK_S, (e) -> this.saveWindows())
+    );
+
+    return saveMenu;
   }
 
   private void addWindow(JInternalFrame frame, int width, int height) {

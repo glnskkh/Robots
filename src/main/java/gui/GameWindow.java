@@ -1,15 +1,22 @@
 package gui;
 
 import java.awt.BorderLayout;
-import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
+import serialization.PreferenceStorableInternalFrame;
 
-public class GameWindow extends JInternalFrame {
+public class GameWindow extends PreferenceStorableInternalFrame {
 
   private final GameVisualizer m_visualizer;
 
   public GameWindow() {
-    super(MainApplicationFrame.getLocaleString("gameWindow.title"), true, true, true, true);
+    super();
+
+    setTitle(MainApplicationFrame.getLocaleString("gameWindow.title"));
+    setResizable(true);
+    setClosable(true);
+    setMaximizable(true);
+    setIconifiable(true);
+
     m_visualizer = new GameVisualizer();
     JPanel panel = new JPanel(new BorderLayout());
     panel.add(m_visualizer, BorderLayout.CENTER);
