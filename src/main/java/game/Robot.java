@@ -42,13 +42,14 @@ public class Robot extends Observable {
     } else {
       angularVelocity = -ANGULAR_VELOCITY;
     }
+
+    if (distanceToTarget() < 20 * TARGET_CLOSE_ENOUGH)
+      angularVelocity = -angularVelocity;
   }
 
-  private boolean closeEnough(Target target) {
-    final double distance = GameLogic.LogicMath.distance(getX(), getY(), target.getX(),
+  private double distanceToTarget() {
+    return GameLogic.LogicMath.distance(getX(), getY(), target.getX(),
         target.getY());
-
-    return distance < TARGET_CLOSE_ENOUGH;
   }
 
   private double angleToTarget() {
@@ -57,7 +58,7 @@ public class Robot extends Observable {
   }
 
   public void move(double dt) {
-    if (closeEnough(target)) {
+    if (distanceToTarget() < TARGET_CLOSE_ENOUGH) {
       return;
     }
 
