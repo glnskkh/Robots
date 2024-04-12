@@ -56,8 +56,6 @@ public class MainApplicationFrame extends JFrame {
     addWindow(createLogWindow(), 300, 800);
 
     gameLogic = new GameLogic();
-    gameLogic.startTimer();
-
     addWindow(new GameWindow(gameLogic), 400, 400);
     addWindow(new GameInfoWindow(gameLogic), 300, 300);
 

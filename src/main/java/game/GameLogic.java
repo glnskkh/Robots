@@ -12,7 +12,9 @@ public class GameLogic {
 
   public GameLogic() {
     target = new Target();
+
     robot = new Robot(target);
+    robot.restore();
   }
 
   public void startTimer() {
@@ -30,6 +32,7 @@ public class GameLogic {
   }
 
   public void stopTimer() {
+    robot.save();
     timer.cancel();
   }
 

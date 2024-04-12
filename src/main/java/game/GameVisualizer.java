@@ -8,6 +8,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.util.TimerTask;
+import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
 public class GameVisualizer extends JPanel {
@@ -29,6 +30,7 @@ public class GameVisualizer extends JPanel {
       public void mouseClicked(MouseEvent e) {
         Point p = e.getPoint();
         logic.setTarget(new Target(p.getX(), p.getY()));
+        logic.getRobot().setLimits(0, 0, getWidth(), getHeight());
 
         repaint();
       }
