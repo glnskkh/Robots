@@ -3,12 +3,11 @@ package game;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.util.TimerTask;
-import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
 public class GameVisualizer extends JPanel {
@@ -28,9 +27,8 @@ public class GameVisualizer extends JPanel {
     addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(MouseEvent e) {
-        Point p = e.getPoint();
-        logic.setTarget(new Target(p.getX(), p.getY()));
-        logic.getRobot().setLimits(0, 0, getWidth(), getHeight());
+        logic.setTarget(e.getPoint());
+        logic.setWindowBounds(new Point2D.Double(getWidth(), getHeight()));
 
         repaint();
       }
@@ -74,7 +72,7 @@ public class GameVisualizer extends JPanel {
     drawOval(g, robotCenterX + 10, robotCenterY, 5, 5);
   }
 
-  private void drawTarget(Graphics2D g, Target target) {
+  private void drawTarget(Graphics2D g, Point2D.Double target) {
     AffineTransform t = AffineTransform.getRotateInstance(0, 0, 0);
     g.setTransform(t);
 

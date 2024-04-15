@@ -1,25 +1,18 @@
 package gui;
 
 import game.GameLogic;
-import game.Robot;
 import java.awt.BorderLayout;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import serialization.PreferenceStorableInternalFrame;
 
 public class GameInfoWindow extends PreferenceStorableInternalFrame implements Observer {
 
-  private final Robot robot;
-  private JLabel label;
+  private final JLabel label;
 
   public GameInfoWindow(GameLogic logic) {
     super();
-
-    this.robot = logic.getRobot();
-
-    robot.addObserver(this);
 
     setResizable(true);
     setClosable(true);
@@ -30,10 +23,16 @@ public class GameInfoWindow extends PreferenceStorableInternalFrame implements O
     getContentPane().add(label, BorderLayout.CENTER);
 
     pack();
+
+    logic.addObserver(this);
   }
 
   @Override
   public void update(Observable o, Object arg) {
-    label.setText("x=%f y=%f\ndirection=%f".formatted(robot.getX(), robot.getY(), robot.getDirection()));
+    GameLogic gameLogic = (GameLogic) o;
+
+    label.setText(
+        "x=%f y=%f direction=%f".formatted(gameLogic.getRobot().getX(), gameLogic.getRobot().getY(),
+            gameLogic.getRobot().getDirection()));
   }
 }

@@ -2,8 +2,6 @@ package game;
 
 import gui.MainApplicationFrame;
 import java.awt.BorderLayout;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import javax.swing.JPanel;
 import serialization.PreferenceStorableInternalFrame;
 

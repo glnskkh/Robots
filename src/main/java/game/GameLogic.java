@@ -1,19 +1,21 @@
 package game;
 
+import java.awt.Point;
+import java.awt.geom.Point2D;
+import java.util.Observable;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class GameLogic {
+public class GameLogic extends Observable {
 
   private final Robot robot;
   private final long dt = 5;
-  private Target target;
+  private final Point2D.Double target = new Point2D.Double(150, 100);
   private Timer timer;
+  private Point2D.Double windowBounds = new Point2D.Double(300, 300);
 
   public GameLogic() {
-    target = new Target();
-
-    robot = new Robot(target);
+    robot = new Robot();
     robot.restore();
   }
 
@@ -22,7 +24,10 @@ public class GameLogic {
     addActionToTimer(new TimerTask() {
       @Override
       public void run() {
-        robot.move(dt);
+        robot.move(dt, target, windowBounds);
+
+        setChanged();
+        notifyObservers();
       }
     }, dt);
   }
@@ -36,44 +41,23 @@ public class GameLogic {
     timer.cancel();
   }
 
-  public void setTarget(Target target) {
-    this.target = target;
-
-    robot.setTarget(target);
-  }
-
   public Robot getRobot() {
     return robot;
   }
 
-  public Target getTarget() {
+  public Point2D.Double getTarget() {
     return target;
   }
 
-  public static class LogicMath {
+  public void setTarget(Point target) {
+    this.target.setLocation(target);
+  }
 
-    public static double distance(double x0, double y0, double x1, double y1) {
-      final double dx = x1 - x0;
-      final double dy = y1 - y0;
+  public Point2D.Double getWindowBounds() {
+    return windowBounds;
+  }
 
-      return Math.sqrt(dx * dx + dy * dy);
-    }
-
-    public static double angleTo(double x0, double y0, double x1, double y1) {
-      final double dx = x1 - x0;
-      final double dy = y1 - y0;
-
-      return asNormalizedRadians(Math.atan2(dy, dx));
-    }
-
-    public static double asNormalizedRadians(double angle) {
-      final double TAU = 2 * Math.PI;
-
-      if (angle < 0) {
-        return TAU - ((-angle) % TAU);
-      }
-
-      return angle % TAU;
-    }
+  public void setWindowBounds(Point2D.Double windowBounds) {
+    this.windowBounds = windowBounds;
   }
 }

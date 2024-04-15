@@ -96,7 +96,8 @@ public class MainApplicationFrame extends JFrame {
   }
 
   void callCloseDialog() {
-    int confirmSave = JOptionPane.showConfirmDialog(this, getLocaleString("saveDialog.message"), getLocaleString("saveDialog.title"), JOptionPane.YES_NO_OPTION);
+    int confirmSave = JOptionPane.showConfirmDialog(this, getLocaleString("saveDialog.message"),
+        getLocaleString("saveDialog.title"), JOptionPane.YES_NO_OPTION);
 
     if (confirmSave == JOptionPane.YES_OPTION) {
       saveWindows();
@@ -213,7 +214,8 @@ public class MainApplicationFrame extends JFrame {
     saveMenu.getAccessibleContext().setAccessibleDescription("saveMenu.accessible");
 
     saveMenu.add(
-        createMenuItem(getLocaleString(("saveMenuItem.text")), KeyEvent.VK_S, (e) -> this.saveWindows())
+        createMenuItem(getLocaleString(("saveMenuItem.text")), KeyEvent.VK_S,
+            (e) -> this.saveWindows())
     );
 
     return saveMenu;
