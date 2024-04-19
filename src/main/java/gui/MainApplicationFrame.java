@@ -108,6 +108,7 @@ public class MainApplicationFrame extends JFrame {
 
     if (confirm == JOptionPane.YES_OPTION) {
       gameLogic.stopTimer();
+      gameLogic.saveState();
 
       setVisible(false);
 

@@ -31,8 +31,7 @@ public class GameInfoWindow extends PreferenceStorableInternalFrame implements O
   public void update(Observable o, Object arg) {
     GameLogic gameLogic = (GameLogic) o;
 
-    label.setText(
-        "x=%f y=%f direction=%f".formatted(gameLogic.getRobot().getX(), gameLogic.getRobot().getY(),
-            gameLogic.getRobot().getDirection()));
+    label.setText("x=%f y=%f direction=%f".formatted(gameLogic.getRobot().getPosition().getX(),
+        gameLogic.getRobot().getPosition().getY(), gameLogic.getRobot().getDirection()));
   }
 }

@@ -1,22 +1,29 @@
 package game;
 
-import java.awt.Point;
 import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Double;
 import java.util.Observable;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class GameLogic extends Observable {
+  private static final double ANGULAR_VELOCITY = 0.001;
+  private static final double TARGET_CLOSE_ENOUGH = 5;
+  private final static double EPSILON = 0.05;
 
   private final Robot robot;
+  private Target target;
+
   private final long dt = 5;
-  private final Point2D.Double target = new Point2D.Double(150, 100);
   private Timer timer;
   private Point2D.Double windowBounds = new Point2D.Double(300, 300);
 
   public GameLogic() {
     robot = new Robot();
     robot.restore();
+
+    target = new Target();
+    target.restore();
   }
 
   public void startTimer() {
@@ -24,7 +31,7 @@ public class GameLogic extends Observable {
     addActionToTimer(new TimerTask() {
       @Override
       public void run() {
-        robot.move(dt, target, windowBounds);
+        moveRobot();
 
         setChanged();
         notifyObservers();
@@ -32,12 +39,48 @@ public class GameLogic extends Observable {
     }, dt);
   }
 
+  public void moveRobot() {
+    if (robot.getPosition().distance(target.getPosition()) < TARGET_CLOSE_ENOUGH) {
+      return;
+    }
+
+    final double angleRobotTarget = GameMath.angleTo(robot.getPosition(), target.getPosition());
+
+    if (Math.abs(robot.getAngularVelocity()) < ANGULAR_VELOCITY ||
+        Math.abs(robot.getDirection() - angleRobotTarget) < EPSILON) {
+      robot.move(new Double(
+          robot.getVelocity() * Math.cos(robot.getDirection()) * dt,
+          robot.getVelocity() * Math.sin(robot.getDirection()) * dt
+      ));
+
+      return;
+    }
+
+    final double newAngle = GameMath.asNormalizedRadians(
+        robot.getDirection() + robot.getAngularVelocity() * dt);
+
+    final double dx = robot.getVelocity() / robot.getAngularVelocity() *
+        (Math.sin(newAngle) - Math.sin(robot.getDirection()));
+    final double dy = robot.getVelocity() / robot.getAngularVelocity() *
+        (Math.cos(newAngle) - Math.cos(robot.getDirection()));
+
+    robot.move(new Point2D.Double(
+        dx * GameMath.speedCoefficient(robot.getPosition().getX(), windowBounds.getX()),
+        - dy * GameMath.speedCoefficient(robot.getPosition().getY(), windowBounds.getY())
+    ));
+    robot.setDirection(newAngle);
+  }
+
   public void addActionToTimer(TimerTask task, long timeout) {
     timer.schedule(task, 0, timeout);
   }
 
-  public void stopTimer() {
+  public void saveState() {
     robot.save();
+    target.save();
+  }
+
+  public void stopTimer() {
     timer.cancel();
   }
 
@@ -45,19 +88,44 @@ public class GameLogic extends Observable {
     return robot;
   }
 
-  public Point2D.Double getTarget() {
+  public Target getTarget() {
     return target;
   }
 
-  public void setTarget(Point target) {
-    this.target.setLocation(target);
-  }
+  public void setTarget(Target target) {
+    this.target = target;
 
-  public Point2D.Double getWindowBounds() {
-    return windowBounds;
+    if (GameMath.angleTo(robot.getPosition(), target.getPosition()) > robot.getDirection()) {
+      robot.setAngularVelocity(-ANGULAR_VELOCITY);
+    } else {
+      robot.setAngularVelocity(ANGULAR_VELOCITY);
+    }
   }
 
   public void setWindowBounds(Point2D.Double windowBounds) {
     this.windowBounds = windowBounds;
+  }
+
+  private static class GameMath {
+    public static double angleTo(Point2D.Double p0, Point2D.Double p1) {
+      final double dx = p1.getX() - p0.getX();
+      final double dy = p1.getY() - p0.getY();
+
+      return asNormalizedRadians(Math.atan2(dy, dx));
+    }
+
+    private static double asNormalizedRadians(double angle) {
+      final double TAU = 2 * Math.PI;
+
+      if (angle < 0) {
+        return TAU - ((-angle) % TAU);
+      }
+
+      return angle % TAU;
+    }
+
+    private static double speedCoefficient(double t, double upperBoundT) {
+      return Math.max(1 - 2 * Math.abs((upperBoundT - t) / upperBoundT - 0.5), 0.01);
+    }
   }
 }

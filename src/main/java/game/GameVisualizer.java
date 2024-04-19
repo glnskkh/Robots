@@ -3,6 +3,7 @@ package game;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
@@ -27,7 +28,9 @@ public class GameVisualizer extends JPanel {
     addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(MouseEvent e) {
-        logic.setTarget(e.getPoint());
+        Point clickPoint = e.getPoint();
+
+        logic.setTarget(new Target(clickPoint.getX(), clickPoint.getY()));
         logic.setWindowBounds(new Point2D.Double(getWidth(), getHeight()));
 
         repaint();
@@ -54,8 +57,8 @@ public class GameVisualizer extends JPanel {
   }
 
   private void drawRobot(Graphics2D g, Robot robot) {
-    int robotCenterX = (int) Math.round(robot.getX());
-    int robotCenterY = (int) Math.round(robot.getY());
+    int robotCenterX = (int) Math.round(robot.getPosition().getX());
+    int robotCenterY = (int) Math.round(robot.getPosition().getY());
 
     AffineTransform t = AffineTransform.getRotateInstance(robot.getDirection(), robotCenterX,
         robotCenterY);
@@ -72,13 +75,13 @@ public class GameVisualizer extends JPanel {
     drawOval(g, robotCenterX + 10, robotCenterY, 5, 5);
   }
 
-  private void drawTarget(Graphics2D g, Point2D.Double target) {
+  private void drawTarget(Graphics2D g, Target target) {
     AffineTransform t = AffineTransform.getRotateInstance(0, 0, 0);
     g.setTransform(t);
 
     g.setColor(Color.GREEN);
-    fillOval(g, (int) target.getX(), (int) target.getY(), 5, 5);
+    fillOval(g, (int) target.getPosition().getX(), (int) target.getPosition().getY(), 5, 5);
     g.setColor(Color.BLACK);
-    drawOval(g, (int) target.getX(), (int) target.getY(), 5, 5);
+    drawOval(g, (int) target.getPosition().getX(), (int) target.getPosition().getY(), 5, 5);
   }
 }
