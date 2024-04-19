@@ -1,15 +1,21 @@
-package gui;
+package game;
 
+import gui.MainApplicationFrame;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import serialization.PreferenceStorableInternalFrame;
 
 public class GameWindow extends PreferenceStorableInternalFrame {
 
-  private final GameVisualizer m_visualizer;
+  private final GameVisualizer gameVisualizer;
+  private final GameLogic logic;
 
-  public GameWindow() {
+  public GameWindow(GameLogic logic) {
     super();
+
+    this.logic = logic;
+
+    logic.startTimer();
 
     setTitle(MainApplicationFrame.getLocaleString("gameWindow.title"));
     setResizable(true);
@@ -17,17 +23,17 @@ public class GameWindow extends PreferenceStorableInternalFrame {
     setMaximizable(true);
     setIconifiable(true);
 
-    m_visualizer = new GameVisualizer();
+    gameVisualizer = new GameVisualizer(logic);
+
     JPanel panel = new JPanel(new BorderLayout());
-    panel.add(m_visualizer, BorderLayout.CENTER);
+    panel.add(gameVisualizer, BorderLayout.CENTER);
     getContentPane().add(panel);
     pack();
   }
 
-  @Override
   public void dispose() {
-    m_visualizer.stopTimer();
-
     super.dispose();
+
+    logic.stopTimer();
   }
 }

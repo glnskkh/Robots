@@ -1,5 +1,7 @@
 package gui;
 
+import game.GameLogic;
+import game.GameWindow;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
@@ -26,6 +28,7 @@ public class MainApplicationFrame extends JFrame {
   private static ResourceBundle rb;
   private JMenuBar mainMenuBar;
   private JDesktopPane mainDesktopPane;
+  private GameLogic gameLogic;
 
   public MainApplicationFrame() {
     setInnerIndentation(50);
@@ -51,7 +54,10 @@ public class MainApplicationFrame extends JFrame {
     mainDesktopPane = new JDesktopPane();
 
     addWindow(createLogWindow(), 300, 800);
-    addWindow(new GameWindow(), 400, 400);
+
+    gameLogic = new GameLogic();
+    addWindow(new GameWindow(gameLogic), 400, 400);
+    addWindow(new GameInfoWindow(gameLogic), 300, 300);
 
     restoreWindows();
 
@@ -90,7 +96,8 @@ public class MainApplicationFrame extends JFrame {
   }
 
   void callCloseDialog() {
-    int confirmSave = JOptionPane.showConfirmDialog(this, getLocaleString("saveDialog.message"), getLocaleString("saveDialog.title"), JOptionPane.YES_NO_OPTION);
+    int confirmSave = JOptionPane.showConfirmDialog(this, getLocaleString("saveDialog.message"),
+        getLocaleString("saveDialog.title"), JOptionPane.YES_NO_OPTION);
 
     if (confirmSave == JOptionPane.YES_OPTION) {
       saveWindows();
@@ -100,6 +107,9 @@ public class MainApplicationFrame extends JFrame {
         getLocaleString("closeDialog.title"), JOptionPane.YES_NO_OPTION);
 
     if (confirm == JOptionPane.YES_OPTION) {
+      gameLogic.stopTimer();
+      gameLogic.saveState();
+
       setVisible(false);
 
       for (var frame : mainDesktopPane.getAllFrames()) {
@@ -205,7 +215,8 @@ public class MainApplicationFrame extends JFrame {
     saveMenu.getAccessibleContext().setAccessibleDescription("saveMenu.accessible");
 
     saveMenu.add(
-        createMenuItem(getLocaleString(("saveMenuItem.text")), KeyEvent.VK_S, (e) -> this.saveWindows())
+        createMenuItem(getLocaleString(("saveMenuItem.text")), KeyEvent.VK_S,
+            (e) -> this.saveWindows())
     );
 
     return saveMenu;
